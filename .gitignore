@@ -16,6 +16,8 @@ data/processed/
 models/*.pt
 models/*.onnx
 models/*.engine
+models/*.pkl
+models/*.meta.json
 *.ckpt
 
 # Notebooks
@@ -24,7 +26,8 @@ models/*.engine
 # OS/IDE
 .DS_Store
 .idea/
-.vscode/
+.vscode/*
+!.vscode/launch.json
 
 # Docker
 *.log

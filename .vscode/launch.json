@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "AL Trading: train baseline (config)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "al_trading",
+      "args": ["train", "--config", "configs/train.yaml", "--output-dir", "models"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" }
+    },
+    {
+      "name": "AL Trading: train baseline (defaults, synthetic)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "al_trading",
+      "args": ["train", "--output-dir", "models"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" }
+    },
+    {
+      "name": "AL Trading: pytest",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["tests/", "-v"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

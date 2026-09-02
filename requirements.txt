@@ -1,1 +1,12 @@
-# Fill in with the exact package versions used once implementation starts.
+# Runtime dependencies, pinned as implementation progresses.
+#
+# Phase 1 (baseline model + daily prediction pipeline):
+numpy>=1.24
+pandas>=2.0
+scikit-learn>=1.3
+lightgbm>=4.0
+joblib>=1.3
+PyYAML>=6.0
+
+# Phase 1 also introduces PostgreSQL (psycopg) for prediction/outcome
+# storage; Phase 3 adds mlflow and a scheduler.

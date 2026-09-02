@@ -1,0 +1,28 @@
+# Baseline LightGBM training config.
+# Omit `data_path` to train on a deterministic synthetic multi-ticker
+# series (no network, used for CI and the first bootstrap run).
+
+model_name: lgbm_baseline
+# data_path: data/ohlcv.csv
+
+tickers: [AAA, BBB, CCC, DDD]
+start: "2018-01-01"
+end: "2022-12-31"
+
+train_end: "2021-06-30"
+val_end: "2022-03-31"
+
+early_stopping_rounds: 40
+random_state: 7
+output_dir: models
+
+lgbm_params:
+  objective: binary
+  n_estimators: 300
+  learning_rate: 0.03
+  num_leaves: 31
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_samples: 40
+  n_jobs: 1
+  verbose: -1
