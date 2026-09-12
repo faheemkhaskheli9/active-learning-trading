@@ -1,0 +1,10 @@
+# Daily prediction job config (Phase 1). Loaded via
+# al_trading.config.load_predict_config. postgres_dsn is intentionally left
+# unset here -- pass it via --dsn or the DATABASE_URL env var in your
+# scheduler, never commit real credentials.
+
+model_dir: models
+tickers: [AAA, BBB, CCC, DDD]
+data_path: null        # null -> synthetic (matches configs/train.yaml's default)
+lookback_days: 120
+postgres_dsn: null

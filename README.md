@@ -111,6 +111,26 @@ hyperparameters, and validation metrics (accuracy, F1, ROC-AUC, a toy
 directional Sharpe). Features are built with a strict no-lookahead
 contract; the label is the sign of the next-day close-to-close return.
 
+Phase 1 — daily prediction generation job (implemented):
+
+```bash
+# One-off / manual run:
+python -m al_trading predict --config configs/predict.yaml --dsn "$DATABASE_URL"
+
+# Scheduler-ready: the exact same command works unchanged from cron or an
+# Airflow BashOperator/PythonOperator -- a non-zero exit + a clear stderr
+# message on failure, no partial rows in `predictions` either way.
+```
+
+Loads the most recently trained model (by embedded run timestamp), computes
+each ticker's latest feature row, and inserts
+`(symbol, prediction_date, predicted_value, predicted_direction,
+model_version)` rows into the `predictions` table in one transaction --
+`storage.PostgresPredictionStore` rolls the whole batch back on any failure,
+so a failed run never leaves partial/corrupt rows. Storage is behind a small
+`PredictionStore` protocol so the job logic is unit-tested with an in-memory
+store; no PostgreSQL server is needed to run `pytest tests/`.
+
 On the synthetic random-walk data the baseline is near chance by design —
 it exists to bootstrap the daily prediction job, and the active-learning
 loop (Phase 2+) is what improves it from realized outcomes.

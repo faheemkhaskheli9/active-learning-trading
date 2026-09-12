@@ -8,7 +8,7 @@ from typing import Any
 
 import yaml
 
-__all__ = ["TrainConfig", "load_config"]
+__all__ = ["PredictConfig", "TrainConfig", "load_config", "load_predict_config"]
 
 _DEFAULT_LGBM_PARAMS: dict[str, Any] = {
     "objective": "binary",
@@ -65,3 +65,35 @@ def load_config(path: str | Path | None) -> TrainConfig:
     if not isinstance(raw, dict):
         raise ValueError(f"{path} must contain a YAML mapping")
     return TrainConfig.from_dict(raw)
+
+
+@dataclass
+class PredictConfig:
+    """Config for the daily prediction job (Phase 1)."""
+
+    model_dir: str = "models"
+    tickers: list[str] = field(default_factory=lambda: ["AAA", "BBB", "CCC", "DDD"])
+    data_path: str | None = None  # None -> synthetic
+    lookback_days: int = 120  # enough calendar history for the longest rolling window
+    postgres_dsn: str | None = None  # e.g. postgresql://user:pass@host:5432/dbname
+
+    @classmethod
+    def from_dict(cls, raw: dict[str, Any]) -> PredictConfig:
+        known = {f for f in cls.__dataclass_fields__}
+        unknown = set(raw) - known
+        if unknown:
+            raise ValueError(f"unknown config key(s): {sorted(unknown)}")
+        return cls(**raw)
+
+
+def load_predict_config(path: str | Path | None) -> PredictConfig:
+    """Load a prediction-job config. Same lenient-default/strict-explicit rule as :func:`load_config`."""
+    if path is None:
+        return PredictConfig()
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"config file not found: {path}")
+    raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(raw, dict):
+        raise ValueError(f"{path} must contain a YAML mapping")
+    return PredictConfig.from_dict(raw)
